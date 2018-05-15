@@ -38,16 +38,16 @@ cope.createBarChartDataDatasets = function () {
 		completed.push(p(dataset.completed));
 		remaining.push(remainingCount);
 	});
-	completed.push(0);
-	remaining.push(0);
 
-	var prediction = [start];
-	var predictionStep = Math.floor((start - remainingCount) / p(cope.sprints));
-	var predictionValue = start;
-	for (i = 0; i < len; i++) {
-		predictionValue -= predictionStep;
-		prediction.push(predictionValue);
-	}
+	i = 1;
+	var remaining2d = [];
+	remaining.forEach(function (v) {
+		remaining2d.push([i++, v]);
+	});
+	var predict = regression.linear(remaining2d);
+	var prediction = predict.points.map(function (v) {
+		return v[1];
+	});
 
 	return [{
 		type: 'line',
@@ -59,14 +59,6 @@ cope.createBarChartDataDatasets = function () {
 		fill: false,
 		lineTension: 0,
 		data: prediction
-		// }, {
-		// 	type: 'line',
-		// 	label: 'Progress',
-		// 	borderColor: '#000000',
-		// 	borderWidth: 3,
-		// 	fill: false,
-		// 	lineTension: 0,
-		// 	data: remaining
 	}, {
 		label: 'Remaining Tasks',
 		backgroundColor: '#2AB6CD',
