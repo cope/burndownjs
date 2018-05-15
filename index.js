@@ -2,21 +2,21 @@ cope = ("undefined" === typeof cope) ? {} : cope;
 cope.allSprints = document.getElementById('allSprints');
 cope.sprints = document.getElementById('sprints').value;
 
-cope.data = [
-	{
-		id: 1,
-		completed: 0,
-		added: 0,
-		removed: 0
-	}
-];
+cope.data = [];
+for (var i = 1; i <= 5; i++) cope.data.push({
+	id: i,
+	completed: 20,
+	added: 0,
+	removed: 0
+})
 
 cope.createBarChartDataLabels = function () {
 	var labels = [];
 	cope.data.forEach(function (dataset) {
 		labels.push('Sprint ' + dataset.id);
 	});
-	labels.push('Sprint ' + (cope.data.length + 1));
+	// labels.push('Sprint ' + (cope.data.length + 1));
+	labels.push(' ');
 	return labels;
 };
 
@@ -30,28 +30,24 @@ cope.createBarChartDataDatasets = function () {
 	start = p(start, 10);
 	start = Math.max(start, 1);
 
-	var prediction = [start];
-	var predictionStep = start / p(cope.sprints);
-	var predictionValue = start;
-	for (i = 1; i < len; i++) {
-		predictionValue -= predictionStep;
-		prediction.push(predictionValue);
-	}
-	prediction.push(0);
-
 	var remainingCount = start;
 	var completed = [0];
-	var progress = [start];
 	var remaining = [start];
 	cope.data.forEach(function (dataset) {
 		remainingCount = p(remainingCount) - p(dataset.completed) + p(dataset.added) - p(dataset.removed);
 		completed.push(p(dataset.completed));
 		remaining.push(remainingCount);
-		progress.push(remainingCount);
 	});
-	console.log('prediction', JSON.stringify(prediction));
-	console.log('completed', JSON.stringify(completed));
-	console.log('remaining', JSON.stringify(remaining));
+	completed.push(0);
+	remaining.push(0);
+
+	var prediction = [start];
+	var predictionStep = Math.floor((start - remainingCount) / p(cope.sprints));
+	var predictionValue = start;
+	for (i = 0; i < len; i++) {
+		predictionValue -= predictionStep;
+		prediction.push(predictionValue);
+	}
 
 	return [{
 		type: 'line',
@@ -63,14 +59,14 @@ cope.createBarChartDataDatasets = function () {
 		fill: false,
 		lineTension: 0,
 		data: prediction
-	}, {
-		type: 'line',
-		label: 'Progress',
-		borderColor: '#000000',
-		borderWidth: 3,
-		fill: false,
-		lineTension: 0,
-		data: progress
+		// }, {
+		// 	type: 'line',
+		// 	label: 'Progress',
+		// 	borderColor: '#000000',
+		// 	borderWidth: 3,
+		// 	fill: false,
+		// 	lineTension: 0,
+		// 	data: remaining
 	}, {
 		label: 'Remaining Tasks',
 		backgroundColor: '#2AB6CD',
