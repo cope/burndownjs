@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Burndown Chart</title>
+	<link rel="stylesheet" type="text/css" href="./index.css">
+</head>
+<div id="starts">Start: <input type="number" onkeydown="cope.updateBurndown()" id="start"/></div>
+<div id="sprints">
+	<table>
+		<tr>
+			<th colspan="2">Sprint 1</th>
+		<tr>
+			<td nowrap align="right">Completed: <input type="number" onkeydown="cope.updateBurndown()" id="completed1"/></td>
+		</tr>
+		<tr>
+			<td nowrap align="right">Added: <input type="number" onkeydown="cope.updateBurndown()" id="added1"/></td>
+		</tr>
+		<tr>
+			<td nowrap align="right">Removed: <input type="number" onkeydown="cope.updateBurndown()" id="removed1"/></td>
+		</tr>
+		</tr>
+	</table>
+</div>
+
+<button id="randomizeData">Randomize Data</button>
+<div style="width: 75%">
+	<canvas id="canvas"></canvas>
+</div>
+<script src="./node_modules/chart.js/dist/Chart.bundle.min.js"></script>
+<script src="./index.js"></script>
+</body>
+</html>

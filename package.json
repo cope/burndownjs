@@ -1,0 +1,11 @@
+{
+  "name": "burndownjs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/cope/burndownjs.git",
+  "author": "Predrag Stojadinovic <predrags@nvidia.com>",
+  "license": "MIT",
+  "dependencies": {
+    "chart.js": "^2.7.2"
+  }
+}
