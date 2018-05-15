@@ -5,26 +5,31 @@
 	<title>Burndown Chart</title>
 	<link rel="stylesheet" type="text/css" href="./index.css">
 </head>
-<div id="starts">Start: <input type="number" onkeydown="cope.updateBurndown()" id="start"/></div>
-<div id="sprints">
+<div>
+	Sprints: <input type="number" onchange="cope.updateSprints()" min="1" step="1" value="1" id="sprints"/> |
+	Start: <input type="number" onchange="cope.updateSprints()" min="1" step="1" value="100" id="start"/>
+</div>
+<div id="allSprints">
 	<table>
 		<tr>
 			<th colspan="2">Sprint 1</th>
-		<tr>
-			<td nowrap align="right">Completed: <input type="number" onkeydown="cope.updateBurndown()" id="completed1"/></td>
 		</tr>
 		<tr>
-			<td nowrap align="right">Added: <input type="number" onkeydown="cope.updateBurndown()" id="added1"/></td>
+			<td nowrap align="right">Completed: <input type="number" onchange="cope.drawBurndownChart()" min="0" step="1" value="0" id="completed1"/></td>
 		</tr>
 		<tr>
-			<td nowrap align="right">Removed: <input type="number" onkeydown="cope.updateBurndown()" id="removed1"/></td>
+			<td nowrap align="right">Added: <input type="number" onchange="cope.drawBurndownChart()" min="0" step="1" value="0" id="added1"/></td>
+		</tr>
+		<tr>
+			<td nowrap align="right">Removed: <input type="number" onchange="cope.drawBurndownChart()" min="0" step="1" value="0" id="removed1"/></td>
 		</tr>
 		</tr>
 	</table>
 </div>
 
-<button id="randomizeData">Randomize Data</button>
-<div style="width: 75%">
+<button id="draw" onclick="cope.updateSprints()">Draw</button>
+
+<div style="width: 90%; height: 40%; border: 1px solid red;">
 	<canvas id="canvas"></canvas>
 </div>
 <script src="./node_modules/chart.js/dist/Chart.bundle.min.js"></script>
