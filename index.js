@@ -29,7 +29,7 @@ cope.data = [{
 	id: 5,
 	completed: 20,
 	added: 0,
-	removed: 20
+	removed: 10
 }];
 // for (var i = 1; i <= 5; i++) cope.data.push({
 // 	id: i,
@@ -64,6 +64,7 @@ cope.updateBarChartData = function () {
 		change += p(dataset.added) - p(dataset.removed);
 	});
 
+	remainingCount = Math.max(remainingCount, 0);
 	var predictValue = start + change;
 	var prediction = [predictValue];
 	var step = (predictValue - remainingCount) / len;
@@ -78,6 +79,29 @@ cope.updateBarChartData = function () {
 		cope.barChartData.labels.push('Sprint ' + dataset.id);
 	});
 	cope.barChartData.labels.push('Sprint ' + (cope.data.length + 1));
+
+	if (predictValue > 0) {
+		while (predictValue > 0) {
+			predictValue -= step;
+			prediction.push(predictValue);
+		}
+
+		len = prediction.length;
+		predictValue = start + change;
+		prediction = [predictValue];
+		step = Math.round(predictValue / (len - 1));
+		for (i = 1; i < len; i++) {
+			predictValue -= step;
+			prediction.push(predictValue);
+
+			if (i > cope.data.length) {
+				cope.barChartData.labels.push('Sprint ' + (i + 1));
+				remaining.push(0);
+				completed.push(0);
+			}
+		}
+		prediction[prediction.length - 1] = 0;
+	}
 
 	// DATASETS
 	cope.barChartData.datasets = [{
