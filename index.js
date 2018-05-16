@@ -49,8 +49,17 @@ cope.updateBarChartData = function () {
 		change += p(dataset.added) - p(dataset.removed);
 	});
 
+	var targetVelocity = document.getElementById('targetVelocity');
+	targetVelocity.innerHTML = "-";
+
 	var predictValue, prediction, step;
 	if (target > 0) {
+		console.log(start, change, (start + change), target, (start + change) / target);
+
+		var velocity = (start + change) / target;
+		targetVelocity.innerHTML = "<b>" + Math.ceil(velocity) + "</b>" +
+			(velocity === Math.ceil(velocity) ? "" : " (" + velocity.toFixed(2) + ")");
+
 		predictValue = start + change;
 		prediction = [predictValue];
 		step = predictValue / target;
