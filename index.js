@@ -1,55 +1,86 @@
 cope = ("undefined" === typeof cope) ? {} : cope;
 cope.allSprints = document.getElementById('allSprints');
 cope.sprints = document.getElementById('sprints').value;
+cope.barChartData = {};
 
 cope.data = [];
-for (var i = 1; i <= 5; i++) cope.data.push({
-	id: i,
+
+cope.data = [{
+	id: 1,
 	completed: 20,
 	added: 0,
 	removed: 0
-})
-
-cope.createBarChartDataLabels = function () {
-	var labels = [];
-	cope.data.forEach(function (dataset) {
-		labels.push('Sprint ' + dataset.id);
-	});
-	// labels.push('Sprint ' + (cope.data.length + 1));
-	labels.push(' ');
-	return labels;
-};
+}, {
+	id: 2,
+	completed: 15,
+	added: 0,
+	removed: 0
+}, {
+	id: 3,
+	completed: 20,
+	added: 0,
+	removed: 10
+}, {
+	id: 4,
+	completed: 10,
+	added: 15,
+	removed: 0
+}, {
+	id: 5,
+	completed: 20,
+	added: 0,
+	removed: 20
+}];
+// for (var i = 1; i <= 5; i++) cope.data.push({
+// 	id: i,
+// 	completed: 20,
+// 	added: 0,
+// 	removed: 0
+// })
 
 var p = function (v) {
 	return parseInt(v, 10);
 };
 
-cope.createBarChartDataDatasets = function () {
+cope.updateBarChartData = function () {
 	var i, len = cope.data.length;
 	var start = document.getElementById('start').value;
 	start = p(start, 10);
 	start = Math.max(start, 1);
 
+	var change = 0;
 	var remainingCount = start;
+	var completedCount = 0;
 	var completed = [0];
 	var remaining = [start];
+
 	cope.data.forEach(function (dataset) {
+		completedCount += p(dataset.completed);
+		completed.push(completedCount);
+
 		remainingCount = p(remainingCount) - p(dataset.completed) + p(dataset.added) - p(dataset.removed);
-		completed.push(p(dataset.completed));
 		remaining.push(remainingCount);
+
+		change += p(dataset.added) - p(dataset.removed);
 	});
 
-	i = 1;
-	var remaining2d = [];
-	remaining.forEach(function (v) {
-		remaining2d.push([i++, v]);
-	});
-	var predict = regression.linear(remaining2d);
-	var prediction = predict.points.map(function (v) {
-		return v[1];
-	});
+	var predictValue = start + change;
+	var prediction = [predictValue];
+	var step = (predictValue - remainingCount) / len;
+	for (i = 0; i < len; i++) {
+		predictValue -= step;
+		prediction.push(predictValue);
+	}
 
-	return [{
+	// LABELS
+	cope.barChartData.labels = [];
+	cope.data.forEach(function (dataset) {
+		cope.barChartData.labels.push('Sprint ' + dataset.id);
+	});
+	cope.barChartData.labels.push('Sprint ' + (cope.data.length + 1));
+
+	// DATASETS
+	cope.barChartData.datasets = [{
 		type: 'line',
 		backgroundColor: '#8CC976',
 		borderColor: '#8CC976',
@@ -68,11 +99,6 @@ cope.createBarChartDataDatasets = function () {
 		backgroundColor: '#9D5CA3',
 		data: completed
 	}];
-};
-
-cope.barChartData = {
-	labels: cope.createBarChartDataLabels(),
-	datasets: cope.createBarChartDataDatasets()
 };
 
 window.onload = function () {
@@ -108,6 +134,7 @@ window.onload = function () {
 			}
 		}
 	});
+
 	cope.updateSprints();
 };
 
@@ -118,8 +145,7 @@ cope.drawBurndownChart = function () {
 		dataset.removed = document.getElementById('removed' + dataset.id).value;
 	});
 
-	cope.barChartData.labels = cope.createBarChartDataLabels();
-	cope.barChartData.datasets = cope.createBarChartDataDatasets();
+	cope.updateBarChartData();
 
 	if (cope.myBar) cope.myBar.update();
 };

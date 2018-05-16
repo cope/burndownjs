@@ -6,7 +6,6 @@
   "author": "Predrag Stojadinovic <predrags@nvidia.com>",
   "license": "MIT",
   "dependencies": {
-    "chart.js": "^2.7.2",
-    "regression": "^2.0.1"
+    "chart.js": "^2.7.2"
   }
 }
