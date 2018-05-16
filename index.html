@@ -9,27 +9,38 @@
 <h2 id="title">Custom Burndown Chart</h2>
 <table>
 	<tr>
-		<td width="120px">
-			<div id="sprintsSetup">
-				<p>Sprints:
-					<select onchange="cope.updateSprints()" id="sprints">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5" selected>5</option>
-					</select>
-				</p>
-				<br/>
-				<p>Start: <input type="number" onchange="cope.updateSprints()" min="1" step="1" value="100" id="start"/></p>
-			</div>
+		<td width="120px" valign="top">
+			<p>Sprints:
+				<select onchange="cope.updateSprints()" id="sprints">
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5" selected>5</option>
+				</select>
+			</p>
+			<br/>
+			<p>Start: <input type="number" onchange="cope.updateSprints()" min="1" step="1" value="100" id="start"/></p>
+		</td>
+		<td width="150px" valign="top">
+			<p>Target Sprint:
+				<select onchange="cope.updateSprints()" id="target">
+					<option value="0" selected>-</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+				</select>
+			</p>
+			<i style="font-size: 8pt;">Select - to have a prediction<br>based on completion velocity.</i>
 		</td>
 		<td>
 			<button id="draw" onclick="cope.updateSprints()">Draw</button>
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2">
+		<td colspan="3">
 			<div id="allSprints"></div>
 		</td>
 	</tr>

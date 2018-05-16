@@ -16,10 +16,22 @@ var p = function (v) {
 };
 
 cope.updateBarChartData = function () {
+	var target = document.getElementById('target').value;
+
 	var i, len = cope.data.length;
 	var start = document.getElementById('start').value;
 	start = p(start, 10);
 	start = Math.max(start, 1);
+
+	if (target > 0) target = Math.max(target, len);
+	document.getElementById('target').value = target;
+
+	// LABELS
+	cope.barChartData.labels = [];
+	cope.data.forEach(function (dataset) {
+		cope.barChartData.labels.push('Sprint ' + dataset.id);
+	});
+	cope.barChartData.labels.push('Sprint ' + (cope.data.length + 1));
 
 	var change = 0;
 	var remainingCount = start;
@@ -37,40 +49,57 @@ cope.updateBarChartData = function () {
 		change += p(dataset.added) - p(dataset.removed);
 	});
 
-	remainingCount = Math.max(remainingCount, 0);
-	var predictValue = start + change;
-	var prediction = [predictValue];
-	var step = (predictValue - remainingCount) / len;
-	for (i = 0; i < len; i++) {
-		predictValue -= step;
-		prediction.push(predictValue);
-	}
-
-	// LABELS
-	cope.barChartData.labels = [];
-	cope.data.forEach(function (dataset) {
-		cope.barChartData.labels.push('Sprint ' + dataset.id);
-	});
-	cope.barChartData.labels.push('Sprint ' + (cope.data.length + 1));
-
-	if (predictValue > 0) {
-		while (predictValue > 0) {
-			predictValue -= step;
-			prediction.push(predictValue);
-		}
-
-		len = prediction.length;
+	var predictValue, prediction, step;
+	if (target > 0) {
 		predictValue = start + change;
 		prediction = [predictValue];
-		step = Math.round(predictValue / (len - 1));
-		for (i = 1; i < len; i++) {
+		step = predictValue / target;
+		for (i = 0; i < target; i++) {
 			predictValue -= step;
-			prediction.push(predictValue);
+			prediction.push(Math.round(predictValue));
 
 			if (i > cope.data.length) {
 				cope.barChartData.labels.push('Sprint ' + (i + 1));
 				remaining.push(0);
 				completed.push(0);
+			}
+		}
+		if (target > len) {
+			cope.barChartData.labels.push('Sprint ' + prediction.length);
+			remaining.push(0);
+			completed.push(0);
+		}
+		prediction[prediction.length - 1] = 0;
+
+	} else {
+		remainingCount = Math.max(remainingCount, 0);
+		predictValue = start + change;
+		prediction = [predictValue];
+		step = (predictValue - remainingCount) / len;
+		for (i = 0; i < len; i++) {
+			predictValue -= step;
+			prediction.push(predictValue);
+		}
+
+		if (predictValue > 0) {
+			while (predictValue > 0) {
+				predictValue -= step;
+				prediction.push(predictValue);
+			}
+
+			len = prediction.length;
+			predictValue = start + change;
+			prediction = [predictValue];
+			step = Math.round(predictValue / (len - 1));
+			for (i = 1; i < len; i++) {
+				predictValue -= step;
+				prediction.push(predictValue);
+
+				if (i > cope.data.length) {
+					cope.barChartData.labels.push('Sprint ' + (i + 1));
+					remaining.push(0);
+					completed.push(0);
+				}
 			}
 		}
 		prediction[prediction.length - 1] = 0;
@@ -100,11 +129,17 @@ cope.updateBarChartData = function () {
 
 window.onload = function () {
 	var sprints = document.getElementById('sprints');
+	var target = document.getElementById('target');
 	for (var i = 6; i <= 20; i++) {
-		var option = document.createElement('option');
-		option.setAttribute('value', i);
-		option.appendChild(document.createTextNode(i));
-		sprints.appendChild(option);
+		var option1 = document.createElement('option');
+		option1.setAttribute('value', i);
+		option1.appendChild(document.createTextNode(i));
+		sprints.appendChild(option1);
+
+		var option2 = document.createElement('option');
+		option2.setAttribute('value', i);
+		option2.appendChild(document.createTextNode(i));
+		target.appendChild(option2);
 	}
 
 	var ctx = document.getElementById('canvas').getContext('2d');
