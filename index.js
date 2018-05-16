@@ -3,40 +3,13 @@ cope.allSprints = document.getElementById('allSprints');
 cope.sprints = document.getElementById('sprints').value;
 cope.barChartData = {};
 
-cope.data = [];
-
-cope.data = [{
-	id: 1,
-	completed: 20,
-	added: 0,
-	removed: 0
-}, {
-	id: 2,
-	completed: 15,
-	added: 0,
-	removed: 0
-}, {
-	id: 3,
-	completed: 20,
-	added: 0,
-	removed: 10
-}, {
-	id: 4,
-	completed: 10,
-	added: 15,
-	removed: 0
-}, {
-	id: 5,
-	completed: 20,
-	added: 0,
-	removed: 10
-}];
-// for (var i = 1; i <= 5; i++) cope.data.push({
-// 	id: i,
-// 	completed: 20,
-// 	added: 0,
-// 	removed: 0
-// })
+cope.data = [
+	{id: 1, completed: 20, added: 0, removed: 0},
+	{id: 2, completed: 15, added: 0, removed: 0},
+	{id: 3, completed: 20, added: 0, removed: 10},
+	{id: 4, completed: 10, added: 15, removed: 0},
+	{id: 5, completed: 20, added: 0, removed: 10}
+];
 
 var p = function (v) {
 	return parseInt(v, 10);
