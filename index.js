@@ -76,6 +76,14 @@ cope.barChartData = {
 };
 
 window.onload = function () {
+	var sprints = document.getElementById('sprints');
+	for (var i = 6; i <= 20; i++) {
+		var option = document.createElement('option');
+		option.setAttribute('value', i);
+		option.appendChild(document.createTextNode(i));
+		sprints.appendChild(option);
+	}
+
 	var ctx = document.getElementById('canvas').getContext('2d');
 	cope.myBar = new Chart(ctx, {
 		type: 'bar',
@@ -143,55 +151,53 @@ cope.drawSprintsTable = function () {
 	cope.allSprints.innerHTML = '';
 
 	var table = document.createElement('table');
+	table.setAttribute('cellpadding', '5');
 	var tbody = document.createElement('tbody');
 
 	var tr1 = document.createElement('tr');
 	var tr2 = document.createElement('tr');
+	var tr3 = document.createElement('tr');
+	var tr4 = document.createElement('tr');
+	tr1.appendChild(document.createElement('th'));
+	tr2.appendChild(cope.createLabelTD(cope.createBoldLabel('Completed', '#9D5CA3')));
+	tr3.appendChild(cope.createLabelTD(cope.createBoldLabel('Added', '#00FF00')));
+	tr4.appendChild(cope.createLabelTD(cope.createBoldLabel('Removed', '#FF0000')));
 	cope.data.forEach(function (dataset) {
 		var id = dataset.id;
-		tr1.appendChild(cope.createSprint(id));
-		tr2.appendChild(cope.createSprintInputs(dataset));
+		tr1.appendChild(cope.createHeaders(id));
+		tr2.appendChild(cope.createInputTD('completed', id, dataset.completed));
+		tr3.appendChild(cope.createInputTD('added', id, dataset.added));
+		tr4.appendChild(cope.createInputTD('removed', id, dataset.removed));
 	});
 
 	tbody.appendChild(tr1);
 	tbody.appendChild(tr2);
+	tbody.appendChild(tr3);
+	tbody.appendChild(tr4);
 
 	table.appendChild(tbody);
 	cope.allSprints.appendChild(table);
 };
 
-cope.createSprint = function (id) {
+cope.createHeaders = function (id) {
 	var th = document.createElement('th');
 	th.appendChild(document.createTextNode('Sprint ' + id));
 	return th;
 };
 
-cope.createSprintInputs = function (dataset) {
-	var id = dataset.id;
-	var table = document.createElement('table');
-	var tbody = document.createElement('tbody');
-	tbody.appendChild(cope.createInputRow('Completed', id, dataset.completed));
-	tbody.appendChild(cope.createInputRow('Added', id, dataset.added));
-	tbody.appendChild(cope.createInputRow('Removed', id, dataset.removed));
-	table.appendChild(tbody);
-
-	var th = document.createElement('th');
-	th.appendChild(table);
-	return th;
+cope.createBoldLabel = function (text, color) {
+	var b = document.createElement('b');
+	b.setAttribute('style', 'color:' + color + ';');
+	b.appendChild(document.createTextNode(text + ':'));
+	return b;
 };
 
-cope.createInputRow = function (label, id, value) {
-	var tr = document.createElement('tr');
-	tr.appendChild(cope.createLabelTD(label));
-	tr.appendChild(cope.createInputTD(label, id, value));
-	return tr;
-};
-
-cope.createLabelTD = function (label) {
+cope.createLabelTD = function (content) {
 	var td = document.createElement('td');
 	td.setAttribute('nowrap', '');
 	td.setAttribute('align', 'right');
-	td.appendChild(document.createTextNode(label + ':'));
+	td.appendChild(content);
+	td.setAttribute('style', 'padding-right:15px;');
 	return td;
 };
 

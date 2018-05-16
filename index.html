@@ -2,18 +2,40 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Burndown Chart</title>
+	<title>Custom Burndown Chart</title>
 	<link rel="stylesheet" type="text/css" href="./index.css">
 </head>
-<div>
-	Sprints: <input type="number" onchange="cope.updateSprints()" min="1" step="1" value="5" id="sprints"/> |
-	Start: <input type="number" onchange="cope.updateSprints()" min="1" step="1" value="100" id="start"/>
-</div>
-<div id="allSprints"></div>
-
-<button id="draw" onclick="cope.updateSprints()">Draw</button>
-
-<div style="width: 90%; height: 40%; border: 1px solid red;">
+<body>
+<h2 id="title">Custom Burndown Chart</h2>
+<table>
+	<tr>
+		<td width="120px">
+			<div id="sprintsSetup">
+				<p>Sprints:
+					<select onchange="cope.updateSprints()" id="sprints">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5" selected>5</option>
+					</select>
+				</p>
+				<br/>
+				<p>Start: <input type="number" onchange="cope.updateSprints()" min="1" step="1" value="100" id="start"/></p>
+			</div>
+		</td>
+		<td>
+			<button id="draw" onclick="cope.updateSprints()">Draw</button>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<div id="allSprints"></div>
+		</td>
+	</tr>
+</table>
+<br/>
+<div style="width: 90%; height: 40%; border: 1px solid red; padding: 10px;">
 	<canvas id="canvas"></canvas>
 </div>
 <script src="./node_modules/chart.js/dist/Chart.bundle.min.js"></script>

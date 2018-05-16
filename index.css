@@ -1,7 +1,7 @@
-#draw {
-	padding: 3px;
-	margin: 10px;
-	margin-bottom: 15px;
+#title {
+	position: absolute;
+	right: 20px;
+	top: 0;
 }
 
 p {
@@ -11,4 +11,27 @@ p {
 input {
 	width: 50px;
 	height: 15px;
+}
+
+button {
+	color: #ffffff;
+	background: #2AB6CD;
+	border: solid #9D5CA3 2px;
+	-webkit-border-radius: 10;
+	-moz-border-radius: 10;
+	border-radius: 10px;
+	font-family: Arial;
+	font-size: 20px;
+	padding: 5px 10px 5px 10px;
+	text-decoration: none;
+	margin: 10px;
+	margin-bottom: 15px;
+}
+
+button:hover {
+	color: #ffffff;
+	background: #9D5CA3;
+	border: solid #2AB6CD 2px;
+	cursor: pointer;
+	text-decoration: none;
 }
