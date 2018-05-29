@@ -1,16 +1,20 @@
 {
-  "name": "burndownjs",
-  "version": "1.0.3",
-  "main": "index.js",
-  "repository": "https://github.com/cope/burndownjs.git",
-  "author": "Predrag Stojadinovic <predrags@nvidia.com>",
-  "license": "MIT",
-  "dependencies": {
-    "chart.js": "^2.7.2"
-  },
-  "devDependencies": {
-    "chai": "^4.1.2",
-    "mocha": "^5.1.1",
-    "nyc": "^11.8.0"
-  }
+	"name": "burndownjs",
+	"version": "1.0.4",
+	"main": "index.js",
+	"repository": "https://github.com/cope/burndownjs.git",
+	"author": "Predrag Stojadinovic <predrags@nvidia.com>",
+	"license": "MIT",
+	"scripts": {
+		"analyze": "sonarjs -e .sonarlint/**,node_modules/**,coverage/**,.nyc_output/**"
+	},
+	"dependencies": {
+		"chart.js": "^2.7.2"
+	},
+	"devDependencies": {
+		"chai": "^4.1.2",
+		"mocha": "^5.1.1",
+		"nyc": "^11.8.0",
+		"sonarjs": "^1.0.0"
+	}
 }

@@ -1,4 +1,4 @@
-cope = ("undefined" === typeof cope) ? {} : cope;
+var cope = ("undefined" === typeof cope) ? {} : cope;
 cope.allSprints = document.getElementById('allSprints');
 cope.sprints = document.getElementById('sprints').value;
 cope.barChartData = {};
@@ -20,7 +20,7 @@ cope.updateBarChartData = function () {
 
 	var i, len = cope.data.length;
 	var start = document.getElementById('start').value;
-	start = p(start, 10);
+	start = p(start);
 	start = Math.max(start, 1);
 
 	if (target > 0) target = Math.max(target, len);
