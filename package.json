@@ -6,7 +6,7 @@
 	"author": "Predrag Stojadinovic <predrags@nvidia.com>",
 	"license": "MIT",
 	"scripts": {
-		"analyze": "sonarjs -e .sonarlint/**,node_modules/**,coverage/**,.nyc_output/**"
+		"sonar": "sonarjs -e .sonarlint/**,node_modules/**,coverage/**,.nyc_output/**"
 	},
 	"dependencies": {
 		"chart.js": "^2.7.2"
