@@ -1,6 +1,6 @@
 var cope = ("undefined" === typeof cope) ? {} : cope;
-cope.allSprints = document.getElementById('allSprints');
-cope.sprints = document.getElementById('sprints').value;
+cope.allSprints = document.getElementById("allSprints");
+cope.sprints = document.getElementById("sprints").value;
 cope.barChartData = {};
 
 cope.data = [
@@ -16,22 +16,22 @@ var p = function (v) {
 };
 
 cope.updateBarChartData = function () {
-	var target = document.getElementById('target').value;
+	var target = document.getElementById("target").value;
 
 	var i, len = cope.data.length;
-	var start = document.getElementById('start').value;
+	var start = document.getElementById("start").value;
 	start = p(start);
 	start = Math.max(start, 1);
 
 	if (target > 0) target = Math.max(target, len);
-	document.getElementById('target').value = target;
+	document.getElementById("target").value = target;
 
 	// LABELS
 	cope.barChartData.labels = [];
 	cope.data.forEach(function (dataset) {
-		cope.barChartData.labels.push('Sprint ' + dataset.id);
+		cope.barChartData.labels.push("Sprint " + dataset.id);
 	});
-	cope.barChartData.labels.push('Sprint ' + (cope.data.length + 1));
+	cope.barChartData.labels.push("Sprint " + (cope.data.length + 1));
 
 	var change = 0;
 	var remainingCount = start;
@@ -49,7 +49,7 @@ cope.updateBarChartData = function () {
 		change += p(dataset.added) - p(dataset.removed);
 	});
 
-	var targetVelocity = document.getElementById('targetVelocity');
+	var targetVelocity = document.getElementById("targetVelocity");
 	targetVelocity.innerHTML = "-";
 
 	var predictValue, prediction, step;
@@ -68,13 +68,13 @@ cope.updateBarChartData = function () {
 			prediction.push(Math.round(predictValue));
 
 			if (i > cope.data.length) {
-				cope.barChartData.labels.push('Sprint ' + (i + 1));
+				cope.barChartData.labels.push("Sprint " + (i + 1));
 				remaining.push(0);
 				completed.push(0);
 			}
 		}
 		if (target > len) {
-			cope.barChartData.labels.push('Sprint ' + prediction.length);
+			cope.barChartData.labels.push("Sprint " + prediction.length);
 			remaining.push(0);
 			completed.push(0);
 		}
@@ -105,7 +105,7 @@ cope.updateBarChartData = function () {
 				prediction.push(predictValue);
 
 				if (i > cope.data.length) {
-					cope.barChartData.labels.push('Sprint ' + (i + 1));
+					cope.barChartData.labels.push("Sprint " + (i + 1));
 					remaining.push(0);
 					completed.push(0);
 				}
@@ -116,52 +116,52 @@ cope.updateBarChartData = function () {
 
 	// DATASETS
 	cope.barChartData.datasets = [{
-		type: 'line',
-		backgroundColor: '#8CC976',
-		borderColor: '#8CC976',
+		type: "line",
+		backgroundColor: "#8CC976",
+		borderColor: "#8CC976",
 		borderDash: [5, 5],
-		label: 'Prediction',
+		label: "Prediction",
 		borderWidth: 3,
 		fill: false,
 		lineTension: 0,
 		data: prediction
 	}, {
-		label: 'Remaining Tasks',
-		backgroundColor: '#2AB6CD',
+		label: "Remaining Tasks",
+		backgroundColor: "#2AB6CD",
 		data: remaining
 	}, {
-		label: 'Completed Tasks',
-		backgroundColor: '#9D5CA3',
+		label: "Completed Tasks",
+		backgroundColor: "#9D5CA3",
 		data: completed
 	}];
 };
 
 window.onload = function () {
-	var sprints = document.getElementById('sprints');
-	var target = document.getElementById('target');
+	var sprints = document.getElementById("sprints");
+	var target = document.getElementById("target");
 	for (var i = 6; i <= 20; i++) {
-		var option1 = document.createElement('option');
-		option1.setAttribute('value', i);
+		var option1 = document.createElement("option");
+		option1.setAttribute("value", i);
 		option1.appendChild(document.createTextNode(i));
 		sprints.appendChild(option1);
 
-		var option2 = document.createElement('option');
-		option2.setAttribute('value', i);
+		var option2 = document.createElement("option");
+		option2.setAttribute("value", i);
 		option2.appendChild(document.createTextNode(i));
 		target.appendChild(option2);
 	}
 
-	var ctx = document.getElementById('canvas').getContext('2d');
+	var ctx = document.getElementById("canvas").getContext("2d");
 	cope.myBar = new Chart(ctx, {
-		type: 'bar',
+		type: "bar",
 		data: cope.barChartData,
 		options: {
 			title: {
 				display: true,
-				text: 'Burndown Chart'
+				text: "Burndown Chart"
 			},
 			tooltips: {
-				mode: 'index',
+				mode: "index",
 				intersect: false
 			},
 			responsive: true,
@@ -181,9 +181,9 @@ window.onload = function () {
 
 cope.drawBurndownChart = function () {
 	cope.data.forEach(function (dataset) {
-		dataset.completed = document.getElementById('completed' + dataset.id).value;
-		dataset.added = document.getElementById('added' + dataset.id).value;
-		dataset.removed = document.getElementById('removed' + dataset.id).value;
+		dataset.completed = document.getElementById("completed" + dataset.id).value;
+		dataset.added = document.getElementById("added" + dataset.id).value;
+		dataset.removed = document.getElementById("removed" + dataset.id).value;
 	});
 
 	cope.updateBarChartData();
@@ -192,7 +192,7 @@ cope.drawBurndownChart = function () {
 };
 
 cope.updateSprints = function () {
-	var sprints = document.getElementById('sprints').value;
+	var sprints = document.getElementById("sprints").value;
 	sprints = Math.max(sprints, 1);
 
 	if (sprints !== cope.sprints) {
@@ -215,26 +215,26 @@ cope.updateSprints = function () {
 };
 
 cope.drawSprintsTable = function () {
-	cope.allSprints.innerHTML = '';
+	cope.allSprints.innerHTML = "";
 
-	var table = document.createElement('table');
-	table.setAttribute('cellpadding', '5');
-	var tbody = document.createElement('tbody');
+	var table = document.createElement("table");
+	table.setAttribute("cellpadding", "5");
+	var tbody = document.createElement("tbody");
 
-	var tr1 = document.createElement('tr');
-	var tr2 = document.createElement('tr');
-	var tr3 = document.createElement('tr');
-	var tr4 = document.createElement('tr');
-	tr1.appendChild(document.createElement('th'));
-	tr2.appendChild(cope.createLabelTD(cope.createBoldLabel('Completed', '#9D5CA3')));
-	tr3.appendChild(cope.createLabelTD(cope.createBoldLabel('Added', '#00FF00')));
-	tr4.appendChild(cope.createLabelTD(cope.createBoldLabel('Removed', '#FF0000')));
+	var tr1 = document.createElement("tr");
+	var tr2 = document.createElement("tr");
+	var tr3 = document.createElement("tr");
+	var tr4 = document.createElement("tr");
+	tr1.appendChild(document.createElement("th"));
+	tr2.appendChild(cope.createLabelTD(cope.createBoldLabel("Completed", "#9D5CA3")));
+	tr3.appendChild(cope.createLabelTD(cope.createBoldLabel("Added", "#00FF00")));
+	tr4.appendChild(cope.createLabelTD(cope.createBoldLabel("Removed", "#FF0000")));
 	cope.data.forEach(function (dataset) {
 		var id = dataset.id;
 		tr1.appendChild(cope.createHeaders(id));
-		tr2.appendChild(cope.createInputTD('completed', id, dataset.completed));
-		tr3.appendChild(cope.createInputTD('added', id, dataset.added));
-		tr4.appendChild(cope.createInputTD('removed', id, dataset.removed));
+		tr2.appendChild(cope.createInputTD("completed", id, dataset.completed));
+		tr3.appendChild(cope.createInputTD("added", id, dataset.added));
+		tr4.appendChild(cope.createInputTD("removed", id, dataset.removed));
 	});
 
 	tbody.appendChild(tr1);
@@ -247,39 +247,39 @@ cope.drawSprintsTable = function () {
 };
 
 cope.createHeaders = function (id) {
-	var th = document.createElement('th');
-	th.appendChild(document.createTextNode('Sprint ' + id));
+	var th = document.createElement("th");
+	th.appendChild(document.createTextNode("Sprint " + id));
 	return th;
 };
 
 cope.createBoldLabel = function (text, color) {
-	var b = document.createElement('b');
-	b.setAttribute('style', 'color:' + color + ';');
-	b.appendChild(document.createTextNode(text + ':'));
+	var b = document.createElement("b");
+	b.setAttribute("style", "color:" + color + ";");
+	b.appendChild(document.createTextNode(text + ":"));
 	return b;
 };
 
 cope.createLabelTD = function (content) {
-	var td = document.createElement('td');
-	td.setAttribute('nowrap', '');
-	td.setAttribute('align', 'right');
+	var td = document.createElement("td");
+	td.setAttribute("nowrap", "");
+	td.setAttribute("align", "right");
 	td.appendChild(content);
-	td.setAttribute('style', 'padding-right:15px;');
+	td.setAttribute("style", "padding-right:15px;");
 	return td;
 };
 
 cope.createInputTD = function (label, id, value) {
-	var td = document.createElement('td');
-	td.setAttribute('nowrap', '');
-	td.setAttribute('align', 'left');
+	var td = document.createElement("td");
+	td.setAttribute("nowrap", "");
+	td.setAttribute("align", "left");
 
-	var input = document.createElement('input');
-	input.setAttribute('type', 'number');
-	input.setAttribute('onchange', 'cope.drawBurndownChart()');
-	input.setAttribute('min', '0');
-	input.setAttribute('step', '1');
-	input.setAttribute('value', value || 0);
-	input.setAttribute('id', label.toLowerCase() + id);
+	var input = document.createElement("input");
+	input.setAttribute("type", "number");
+	input.setAttribute("onchange", "cope.drawBurndownChart()");
+	input.setAttribute("min", "0");
+	input.setAttribute("step", "1");
+	input.setAttribute("value", value || 0);
+	input.setAttribute("id", label.toLowerCase() + id);
 	td.appendChild(input);
 
 	return td;
