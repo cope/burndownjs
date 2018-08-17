@@ -1,4 +1,6 @@
-var cope = ("undefined" === typeof cope) ? {} : cope;
+/* global Chart */
+
+var cope = {};
 cope.allSprints = document.getElementById("allSprints");
 cope.sprints = document.getElementById("sprints").value;
 cope.barChartData = {};
@@ -54,7 +56,7 @@ cope.updateBarChartData = function () {
 
 	var predictValue, prediction, step;
 	if (target > 0) {
-		console.log(start, change, (start + change), target, (start + change) / target);
+		// console.log(start, change, (start + change), target, (start + change) / target);
 
 		var velocity = (start + change) / target;
 		targetVelocity.innerHTML = "<b>" + Math.ceil(velocity) + "</b>" +
