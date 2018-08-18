@@ -19,6 +19,66 @@ var p = function (v) {
 	return parseInt(v, 10);
 };
 
+cope.processTargetVelocity = function () {
+	// console.log(cope.start, cope.change, (cope.start + cope.change), cope.target, (cope.start + cope.change) / cope.target);
+
+	var velocity = (cope.start + cope.change) / cope.target;
+	document.getElementById("targetVelocity").innerHTML = "<b>" + Math.ceil(velocity) + "</b>" + (velocity === Math.ceil(velocity) ? "" : " (" + velocity.toFixed(2) + ")");
+
+	var predictValue = cope.start + cope.change;
+	cope.prediction = [predictValue];
+	var step = predictValue / cope.target;
+	for (var a = 0; a < cope.target; a++) {
+		predictValue -= step;
+		cope.prediction.push(Math.round(predictValue));
+
+		if (a > cope.data.length) {
+			cope.barChartData.labels.push("Sprint " + (a + 1));
+			cope.remaining.push(0);
+			cope.completed.push(0);
+		}
+	}
+	if (cope.target > cope.data.length) {
+		cope.barChartData.labels.push("Sprint " + cope.prediction.length);
+		cope.remaining.push(0);
+		cope.completed.push(0);
+	}
+	cope.prediction[cope.prediction.length - 1] = 0;
+};
+
+cope.processNoTargetVelocity = function (remainingCount) {
+	var predictValue = cope.start + cope.change;
+	cope.prediction = [predictValue];
+	var step = (predictValue - remainingCount) / cope.data.length;
+	for (var b = 0; b < cope.data.length; b++) {
+		predictValue -= step;
+		cope.prediction.push(predictValue);
+	}
+
+	if (predictValue > 0) {
+		while (predictValue > 0) {
+			predictValue -= step;
+			cope.prediction.push(predictValue);
+		}
+
+		var len = cope.prediction.length;
+		predictValue = cope.start + cope.change;
+		cope.prediction = [predictValue];
+		step = Math.round(predictValue / (len - 1));
+		for (var c = 1; c < len; c++) {
+			predictValue -= step;
+			cope.prediction.push(predictValue);
+
+			if (c > cope.data.length) {
+				cope.barChartData.labels.push("Sprint " + (c + 1));
+				cope.remaining.push(0);
+				cope.completed.push(0);
+			}
+		}
+	}
+	cope.prediction[cope.prediction.length - 1] = 0;
+};
+
 cope.updateBarChartData = function () {
 	cope.start = document.getElementById("start").value;
 	cope.start = p(cope.start);
@@ -28,89 +88,31 @@ cope.updateBarChartData = function () {
 	if (cope.target > 0) cope.target = Math.max(cope.target, cope.data.length);
 	document.getElementById("target").value = cope.target;
 
-	var change = 0;
+	cope.change = 0;
 	var remainingCount = cope.start;
 	var completedCount = 0;
-	var completed = [0];
-	var remaining = [cope.start];
+	cope.completed = [0];
+	cope.remaining = [cope.start];
 
 	cope.barChartData.labels = [];
 	cope.data.forEach(function (dataset) {
 		cope.barChartData.labels.push("Sprint " + dataset.id);
 
 		completedCount += p(dataset.completed);
-		completed.push(completedCount);
+		cope.completed.push(completedCount);
 
 		remainingCount = p(remainingCount) - p(dataset.completed) + p(dataset.added) - p(dataset.removed);
-		remaining.push(remainingCount);
+		cope.remaining.push(remainingCount);
 
-		change += p(dataset.added) - p(dataset.removed);
+		cope.change += p(dataset.added) - p(dataset.removed);
 	});
 	cope.barChartData.labels.push("Sprint " + (cope.data.length + 1));
+	remainingCount = Math.max(remainingCount, 0);
 
-	var targetVelocity = document.getElementById("targetVelocity");
-	targetVelocity.innerHTML = "-";
+	document.getElementById("targetVelocity").innerHTML = "-";
 
-	var predictValue, prediction, step;
-	if (cope.target > 0) {
-		// console.log(cope.start, change, (cope.start + change), cope.target, (cope.start + change) / cope.target);
-
-		var velocity = (cope.start + change) / cope.target;
-		targetVelocity.innerHTML = "<b>" + Math.ceil(velocity) + "</b>" + (velocity === Math.ceil(velocity) ? "" : " (" + velocity.toFixed(2) + ")");
-
-		predictValue = cope.start + change;
-		prediction = [predictValue];
-		step = predictValue / cope.target;
-		for (var a = 0; a < cope.target; a++) {
-			predictValue -= step;
-			prediction.push(Math.round(predictValue));
-
-			if (a > cope.data.length) {
-				cope.barChartData.labels.push("Sprint " + (a + 1));
-				remaining.push(0);
-				completed.push(0);
-			}
-		}
-		if (cope.target > cope.data.length) {
-			cope.barChartData.labels.push("Sprint " + prediction.length);
-			remaining.push(0);
-			completed.push(0);
-		}
-		prediction[prediction.length - 1] = 0;
-
-	} else {
-		remainingCount = Math.max(remainingCount, 0);
-		predictValue = cope.start + change;
-		prediction = [predictValue];
-		step = (predictValue - remainingCount) / cope.data.length;
-		for (var b = 0; b < cope.data.length; b++) {
-			predictValue -= step;
-			prediction.push(predictValue);
-		}
-
-		if (predictValue > 0) {
-			while (predictValue > 0) {
-				predictValue -= step;
-				prediction.push(predictValue);
-			}
-
-			var len = prediction.length;
-			predictValue = cope.start + change;
-			prediction = [predictValue];
-			step = Math.round(predictValue / (len - 1));
-			for (var c = 1; c < len; c++) {
-				predictValue -= step;
-				prediction.push(predictValue);
-
-				if (c > cope.data.length) {
-					cope.barChartData.labels.push("Sprint " + (c + 1));
-					remaining.push(0);
-					completed.push(0);
-				}
-			}
-		}
-		prediction[prediction.length - 1] = 0;
-	}
+	if (cope.target > 0) cope.processTargetVelocity();
+	else cope.processNoTargetVelocity(remainingCount);
 
 	// DATASETS
 	cope.barChartData.datasets = [{
@@ -122,15 +124,15 @@ cope.updateBarChartData = function () {
 		borderWidth: 3,
 		fill: false,
 		lineTension: 0,
-		data: prediction
+		data: cope.prediction
 	}, {
 		label: "Remaining Tasks",
 		backgroundColor: "#2AB6CD",
-		data: remaining
+		data: cope.remaining
 	}, {
 		label: "Completed Tasks",
 		backgroundColor: "#9D5CA3",
-		data: completed
+		data: cope.completed
 	}];
 };
 
