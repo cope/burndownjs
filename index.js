@@ -61,12 +61,12 @@ cope.updateBarChartData = function () {
 		predictValue = cope.start + change;
 		prediction = [predictValue];
 		step = predictValue / cope.target;
-		for (var i = 0; i < cope.target; i++) {
+		for (var a = 0; a < cope.target; a++) {
 			predictValue -= step;
 			prediction.push(Math.round(predictValue));
 
-			if (i > cope.data.length) {
-				cope.barChartData.labels.push("Sprint " + (i + 1));
+			if (a > cope.data.length) {
+				cope.barChartData.labels.push("Sprint " + (a + 1));
 				remaining.push(0);
 				completed.push(0);
 			}
@@ -83,7 +83,7 @@ cope.updateBarChartData = function () {
 		predictValue = cope.start + change;
 		prediction = [predictValue];
 		step = (predictValue - remainingCount) / cope.data.length;
-		for (var i = 0; i < cope.data.length; i++) {
+		for (var b = 0; b < cope.data.length; b++) {
 			predictValue -= step;
 			prediction.push(predictValue);
 		}
@@ -98,12 +98,12 @@ cope.updateBarChartData = function () {
 			predictValue = cope.start + change;
 			prediction = [predictValue];
 			step = Math.round(predictValue / (len - 1));
-			for (i = 1; i < len; i++) {
+			for (b = 1; b < len; b++) {
 				predictValue -= step;
 				prediction.push(predictValue);
 
-				if (i > cope.data.length) {
-					cope.barChartData.labels.push("Sprint " + (i + 1));
+				if (b > cope.data.length) {
+					cope.barChartData.labels.push("Sprint " + (b + 1));
 					remaining.push(0);
 					completed.push(0);
 				}
