@@ -46,6 +46,32 @@ cope.processTargetVelocity = function () {
 	cope.prediction[cope.prediction.length - 1] = 0;
 };
 
+cope.pushPredictionValues = function (predictValue, step) {
+	while (predictValue > 0) {
+		predictValue -= step;
+		cope.prediction.push(predictValue);
+	}
+};
+
+cope.pushPredictionValues = function (predictValue, step, len) {
+	for (var c = 1; c < len; c++) {
+		predictValue -= step;
+		cope.prediction.push(predictValue);
+		cope.pushLabelIfNeeded(c, "Sprint " + (c + 1));
+	}
+};
+
+cope.processNoTargetVelocitiesPrediction = function (predictValue, step) {
+	cope.pushPredictionValues(predictValue, step);
+
+	var len = cope.prediction.length;
+	predictValue = cope.start + cope.change;
+	cope.prediction = [predictValue];
+	step = Math.round(predictValue / (len - 1));
+
+	cope.pushPredictionValues(predictValue, step, len);
+};
+
 cope.processNoTargetVelocity = function (remainingCount) {
 	var predictValue = cope.start + cope.change;
 	cope.prediction = [predictValue];
@@ -55,22 +81,7 @@ cope.processNoTargetVelocity = function (remainingCount) {
 		cope.prediction.push(predictValue);
 	}
 
-	if (predictValue > 0) {
-		while (predictValue > 0) {
-			predictValue -= step;
-			cope.prediction.push(predictValue);
-		}
-
-		var len = cope.prediction.length;
-		predictValue = cope.start + cope.change;
-		cope.prediction = [predictValue];
-		step = Math.round(predictValue / (len - 1));
-		for (var c = 1; c < len; c++) {
-			predictValue -= step;
-			cope.prediction.push(predictValue);
-			cope.pushLabelIfNeeded(c, "Sprint " + (c + 1));
-		}
-	}
+	if (predictValue > 0) cope.processNoTargetVelocitiesPrediction(predictValue, step);
 	cope.prediction[cope.prediction.length - 1] = 0;
 };
 
