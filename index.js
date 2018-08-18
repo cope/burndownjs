@@ -19,6 +19,14 @@ var p = function (v) {
 	return parseInt(v, 10);
 };
 
+cope.pushLabelIfNeeded = function (check, label) {
+	if (check > cope.data.length) {
+		cope.barChartData.labels.push(label);
+		cope.remaining.push(0);
+		cope.completed.push(0);
+	}
+};
+
 cope.processTargetVelocity = function () {
 	// console.log(cope.start, cope.change, (cope.start + cope.change), cope.target, (cope.start + cope.change) / cope.target);
 
@@ -31,18 +39,10 @@ cope.processTargetVelocity = function () {
 	for (var a = 0; a < cope.target; a++) {
 		predictValue -= step;
 		cope.prediction.push(Math.round(predictValue));
+		cope.pushLabelIfNeeded(a, "Sprint " + (a + 1));
+	}
+	cope.pushLabelIfNeeded(cope.target, "Sprint " + cope.prediction.length);
 
-		if (a > cope.data.length) {
-			cope.barChartData.labels.push("Sprint " + (a + 1));
-			cope.remaining.push(0);
-			cope.completed.push(0);
-		}
-	}
-	if (cope.target > cope.data.length) {
-		cope.barChartData.labels.push("Sprint " + cope.prediction.length);
-		cope.remaining.push(0);
-		cope.completed.push(0);
-	}
 	cope.prediction[cope.prediction.length - 1] = 0;
 };
 
@@ -68,12 +68,7 @@ cope.processNoTargetVelocity = function (remainingCount) {
 		for (var c = 1; c < len; c++) {
 			predictValue -= step;
 			cope.prediction.push(predictValue);
-
-			if (c > cope.data.length) {
-				cope.barChartData.labels.push("Sprint " + (c + 1));
-				cope.remaining.push(0);
-				cope.completed.push(0);
-			}
+			cope.pushLabelIfNeeded(c, "Sprint " + (c + 1));
 		}
 	}
 	cope.prediction[cope.prediction.length - 1] = 0;
