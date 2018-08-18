@@ -98,12 +98,12 @@ cope.updateBarChartData = function () {
 			predictValue = cope.start + change;
 			prediction = [predictValue];
 			step = Math.round(predictValue / (len - 1));
-			for (b = 1; b < len; b++) {
+			for (var c = 1; c < len; c++) {
 				predictValue -= step;
 				prediction.push(predictValue);
 
-				if (b > cope.data.length) {
-					cope.barChartData.labels.push("Sprint " + (b + 1));
+				if (c > cope.data.length) {
+					cope.barChartData.labels.push("Sprint " + (c + 1));
 					remaining.push(0);
 					completed.push(0);
 				}
