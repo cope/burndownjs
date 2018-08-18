@@ -1,47 +1,43 @@
 /* global Chart */
 
-var cope = {};
-cope.allSprints = document.getElementById("allSprints");
-cope.sprints = document.getElementById("sprints").value;
-cope.barChartData = {};
-
-cope.data = [
-	{id: 1, completed: 20, added: 0, removed: 0},
-	{id: 2, completed: 15, added: 0, removed: 0},
-	{id: 3, completed: 20, added: 0, removed: 10},
-	{id: 4, completed: 10, added: 15, removed: 0},
-	{id: 5, completed: 20, added: 0, removed: 10}
-];
+var cope = {
+	allSprints: document.getElementById("allSprints"),
+	sprints: document.getElementById("sprints").value,
+	barChartData: {},
+	data: [
+		{id: 1, completed: 20, added: 0, removed: 0},
+		{id: 2, completed: 15, added: 0, removed: 0},
+		{id: 3, completed: 20, added: 0, removed: 10},
+		{id: 4, completed: 10, added: 15, removed: 0},
+		{id: 5, completed: 20, added: 0, removed: 10}
+	],
+	target: 0,
+	start: 0
+};
 
 var p = function (v) {
 	return parseInt(v, 10);
 };
 
 cope.updateBarChartData = function () {
-	var target = document.getElementById("target").value;
+	cope.start = document.getElementById("start").value;
+	cope.start = p(cope.start);
+	cope.start = Math.max(cope.start, 1);
 
-	var i, len = cope.data.length;
-	var start = document.getElementById("start").value;
-	start = p(start);
-	start = Math.max(start, 1);
+	cope.target = document.getElementById("target").value;
+	if (cope.target > 0) cope.target = Math.max(cope.target, cope.data.length);
+	document.getElementById("target").value = cope.target;
 
-	if (target > 0) target = Math.max(target, len);
-	document.getElementById("target").value = target;
+	var change = 0;
+	var remainingCount = cope.start;
+	var completedCount = 0;
+	var completed = [0];
+	var remaining = [cope.start];
 
-	// LABELS
 	cope.barChartData.labels = [];
 	cope.data.forEach(function (dataset) {
 		cope.barChartData.labels.push("Sprint " + dataset.id);
-	});
-	cope.barChartData.labels.push("Sprint " + (cope.data.length + 1));
 
-	var change = 0;
-	var remainingCount = start;
-	var completedCount = 0;
-	var completed = [0];
-	var remaining = [start];
-
-	cope.data.forEach(function (dataset) {
 		completedCount += p(dataset.completed);
 		completed.push(completedCount);
 
@@ -50,22 +46,22 @@ cope.updateBarChartData = function () {
 
 		change += p(dataset.added) - p(dataset.removed);
 	});
+	cope.barChartData.labels.push("Sprint " + (cope.data.length + 1));
 
 	var targetVelocity = document.getElementById("targetVelocity");
 	targetVelocity.innerHTML = "-";
 
 	var predictValue, prediction, step;
-	if (target > 0) {
-		// console.log(start, change, (start + change), target, (start + change) / target);
+	if (cope.target > 0) {
+		// console.log(cope.start, change, (cope.start + change), cope.target, (cope.start + change) / cope.target);
 
-		var velocity = (start + change) / target;
-		targetVelocity.innerHTML = "<b>" + Math.ceil(velocity) + "</b>" +
-			(velocity === Math.ceil(velocity) ? "" : " (" + velocity.toFixed(2) + ")");
+		var velocity = (cope.start + change) / cope.target;
+		targetVelocity.innerHTML = "<b>" + Math.ceil(velocity) + "</b>" + (velocity === Math.ceil(velocity) ? "" : " (" + velocity.toFixed(2) + ")");
 
-		predictValue = start + change;
+		predictValue = cope.start + change;
 		prediction = [predictValue];
-		step = predictValue / target;
-		for (i = 0; i < target; i++) {
+		step = predictValue / cope.target;
+		for (var i = 0; i < cope.target; i++) {
 			predictValue -= step;
 			prediction.push(Math.round(predictValue));
 
@@ -75,7 +71,7 @@ cope.updateBarChartData = function () {
 				completed.push(0);
 			}
 		}
-		if (target > len) {
+		if (cope.target > cope.data.length) {
 			cope.barChartData.labels.push("Sprint " + prediction.length);
 			remaining.push(0);
 			completed.push(0);
@@ -84,10 +80,10 @@ cope.updateBarChartData = function () {
 
 	} else {
 		remainingCount = Math.max(remainingCount, 0);
-		predictValue = start + change;
+		predictValue = cope.start + change;
 		prediction = [predictValue];
-		step = (predictValue - remainingCount) / len;
-		for (i = 0; i < len; i++) {
+		step = (predictValue - remainingCount) / cope.data.length;
+		for (var i = 0; i < cope.data.length; i++) {
 			predictValue -= step;
 			prediction.push(predictValue);
 		}
@@ -98,8 +94,8 @@ cope.updateBarChartData = function () {
 				prediction.push(predictValue);
 			}
 
-			len = prediction.length;
-			predictValue = start + change;
+			var len = prediction.length;
+			predictValue = cope.start + change;
 			prediction = [predictValue];
 			step = Math.round(predictValue / (len - 1));
 			for (i = 1; i < len; i++) {
